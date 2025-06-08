@@ -267,35 +267,95 @@ db.posts.find({ TextPost: "Estoy pensando en comprar una, ¿qué opinan?" })
 
 
 <!-------------- Actualizar comentarios: ------------->
-<!------ Actualiza el comentario de una publicación ------>
-
+<!------ 14 -Actualiza el comentario de una publicación ------>
+db.posts.updateOne(
+  { _id: ObjectId("6844033fc0222f482c50eb7a") }, // Reemplaza con el ID real
+  {
+    $set: {
+      Comments: [
+        { Username: "1ana456", TextComment: "1 Buen post!" },
+      ]
+    }
+  }
+);
 
 <!--------------- Actualizar usuarios:----------->
-<!-- Actualiza todos los campos de un usuario -->
-<!-- Cambiar el email de dos usuarios es decir hacer la query dos veces. -->
-<!-- Aumenta en 5 años la edad de un usuario -->
+<!-- 15 - Actualiza todos los campos de un usuario -->
+db.users.updateOne(
+  { UserName: "leire123" },
+  {
+    $set: {
+      UserName: "leire_updated",
+      Email: "nuevoemail@g.com",
+      Age: 28
+    }
+  }
+);
 
+<!-- 16 - Cambiar el email de dos usuarios es decir hacer la query dos veces. -->
+db.users.updateOne(
+  { UserName: "ana89" },
+  { $set: { Email: "ana89_new@gmail.com" } }
+);
 
+db.users.updateOne(
+  { UserName: "mario_dev" },
+  { $set: { Email: "mario.new@outlook.com" } }
+);
+
+<!-- 17 - Aumenta en 5 años la edad de un usuario -->
+db.users.updateOne(
+  { UserName: "daniCoder" },
+  { $inc: { Age: 5 } }
+);
+
+<!--------------- Actualizar usuarios:----------->
 <!-- 1.2.3 OBTENER DATOS -->
-<!-- Seleccionar todas las publicaciones -->
-<!-- Selecciona las publicaciones que coincidan con el username indicado -->
-<!-- Selecciona todos los usuarios con una edad mayor a 20 -->
-<!-- Selecciona todos los usuarios con una edad inferior a 23 -->
-<!-- Selecciona todos los usuarios que tengan una edad entre 25 y 30 años -->
-<!-- Muestra los usuarios de edad menor a mayor y viceversa -->
-<!-- Selecciona el número total de usuarios -->
-<!-- Selecciona todas las publicaciones y haz que se muestren con la siguiente estructura: Título de la publicación: "title one" -->
-<!-- Selecciona solo 2 usuarios -->
-<!-- Busca por title 2 publicaciones -->
+<!-- 18 - Seleccionar todas las publicaciones -->
+db.posts.find();
 
+<!-- 19 - Selecciona las publicaciones que coincidan con el username indicado -->
+db.posts.find({ Username: "1juan123" });
+
+<!-- 20 - Selecciona todos los usuarios con una edad mayor a 20 -->
+db.users.find({ Age: { $gt: 20 } });
+
+<!-- 21 - Selecciona todos los usuarios con una edad inferior a 23 -->
+db.users.find({ Age: { $lt: 23 } });
+
+<!-- 22 - Selecciona todos los usuarios que tengan una edad entre 25 y 30 años -->
+db.users.find({ Age: { $gte: 25, $lte: 30 } });
+
+<!-- 23 - Muestra los usuarios de edad menor a mayor y viceversa -->
+db.users.find().sort({ Age: 1 });
+db.users.find().sort({ Age: -1 });
+
+<!-- 24 - Selecciona el número total de usuarios -->
+db.users.countDocuments();
+
+<!-- 25 - Selecciona todas las publicaciones y haz que se muestren con la siguiente estructura: Título de la publicación: "title one" -->
+db.users.countDocuments();
+db.posts.find().forEach(post => print("Título de la publicación: \"" + post.Title + "\""));
+
+<!-- 26 - Selecciona solo 2 usuarios -->
+db.users.find().limit(2);
+
+<!-- 27 - Busca por title 2 publicaciones -->
+db.posts.find({ Title: /2/i });
 
 <!-- 1.2.4 BORRAR DATOS -->
-<!-- Elimina a todos los usuarios con una edad mayor a 30 -->
-
+<!-- 28 - Elimina a todos los usuarios con una edad mayor a 30 -->
+db.users.deleteMany({ Age: { $gt: 30 } });
 
 <!-- 1.2.5 SELECCIONAR Y FILTRAR -->
-<!-- Selecciona el número total de publicaciones que tienen más de un comentario -->
-<!-- Selecciona la última publicación creada -->
-<!-- Selecciona 5 publicaciones y que sean las últimas creadas -->
-<!-- Elimina todas las publicaciones que tengan más de un comentario -->
+<!-- 29 - Selecciona el número total de publicaciones que tienen más de un comentario -->
+db.posts.countDocuments({ "Comments.1": { $exists: true } });
 
+<!-- 30 - Selecciona la última publicación creada -->
+db.posts.find().sort({ date: -1 }).limit(1);
+
+<!-- 31 - Selecciona 5 publicaciones y que sean las últimas creadas -->
+db.posts.find().sort({ date: -1 }).limit(5);
+
+<!-- 32 - Elimina todas las publicaciones que tengan más de un comentario -->
+db.posts.deleteMany({ "Comments.1": { $exists: true } });
